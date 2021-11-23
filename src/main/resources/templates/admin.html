@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="">
+<head th:replace="/gathered/head" xmlns:th="http://www.w3.org/1999/xhtml"></head>
+
+<body>
+
+<header th:replace="/gathered/header"></header>
+
+    <div class="container-flow">
+        <div class="row">
+
+            <div class="col-sm">
+                <h2 style="text-align:center;">Items</h2>
+                <table class="table mt-3">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Start</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Auction End</th>
+                        <th scope="col">Seller</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="i: ${items}">
+                        <td th:text="${i.id}"></td>
+                        <td th:text="${i.name}"></td>
+                        <td th:text="${i.startingBid}"></td>
+                        <td th:text="${i.description}"></td>
+                        <td th:text="${i.formattedDate}"></td>
+                        <td th:text="${i.user.email}"></td>
+                        <td th:text="${i.category.title}"></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+                                    <form action="/admin/updateItem" method="get" style="margin-left: 10px">
+                                        <input type="text" id="id" name="id" th:value="${i.id}" hidden><br>
+                                        <label for="name" >Name:</label><br>
+                                        <input type="text" id="name" name="name" th:value="${i.name}"><br>
+
+                                        <label for="startingBid" >Starting Price:</label><br>
+                                        <input type="text" id="startingBid" name="startingBid" th:value="${i.startingBid}"><br>
+                                        <label for="picture" >Image Link:</label><br>
+                                        <input type="text" id="picture" name="picture" th:value="${i.picture}"><br>
+                                        <label for="category" th:text="'Category: '+${i.category.title}">Category:</label><br>
+                                        <select id="category" name="category">
+                                            <option th:each="c: ${category}" th:text="${c.title}" th:value="${c.title}"></option>
+                                        </select><br>
+                                        <label for="picture" >Description:</label><br>
+                                        <textarea rows="4" cols="30" id="description" name="description" th:text="${i.description}"></textarea>
+                                        </textarea>
+
+                                        <input type="submit" value="Submit">
+                                    </form>
+                                </div>
+                            </div>
+                        </td>
+                        <td><a th:href="@{'/admin/deleteItem/' + ${i.id}}"><button type="button" class="btn btn-danger"><i class="fas fa-trash"></i>
+                        </button></a></td>
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-sm">
+                <h2 style="text-align:center;">Users</h2>
+                <table class="table mt-3">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="u: ${users}">
+                        <td th:text="${u.id}"></td>
+                        <td th:text="${u.name}"></td>
+                        <td th:text="${u.email}"></td>
+                        <td th:text="${u.description}"></td>
+                        <td><div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+                                <form action="/admin/updateUser" method="get" style="margin-left: 10px">
+                                    <input type="text" id="id" name="id" th:value="${u.id}" hidden><br>
+                                    <label for="name" >Name:</label><br>
+                                    <input type="text" id="name" name="name" th:value="${u.name}"><br>
+
+                                    <label for="email" >Email:</label><br>
+                                    <input type="text" id="email" name="email" th:value="${u.email}"><br>
+                                    <label for="description" >Description:</label><br>
+                                    <textarea rows="4" cols="30" id="description" name="description" th:text="${u.description}"></textarea>
+
+                                    <input type="submit" value="Submit">
+                                </form>
+                            </div>
+                        </div>
+                        </td>
+                        <td><a th:href="@{'/admin/deleteUser/' + ${u.id}}"><button type="button" class="btn btn-danger"><i class="fas fa-trash"></i>
+                        </button></a></td>
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

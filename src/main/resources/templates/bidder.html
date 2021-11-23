@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="">
+<head th:replace="/gathered/head" xmlns:th="http://www.w3.org/1999/xhtml"></head>
+
+<body>
+
+<header th:replace="/gathered/header"></header>
+
+
+    <div class="container-flow">
+        <h2 th:text="${meddelande}"></h2>
+        <p th:text="${admin}"></p>
+        
+        <div style="display: flex; justify-content: space-around; margin-bottom: 1%;">
+            <button class="btn btn my-2 my-sm-0" type="button" style="background-color: #a56b38; color: white;">
+            <a href="/allitems?page=0" style="text-decoration: none; color: white;">All</a>
+            </button>
+            <button class="btn btn my-2 my-sm-0" th:each="c: ${category}" type="button" style="background-color: #a56b38; color: white;">
+                    <a th:href="@{'/home/' + ${c.id}}" th:text="${c.title}" style="text-decoration: none; color: white;"></a>
+            </button>
+        </div>
+
+        <div th:unless="${currentCategory == null}">
+            <h2 style="display: flex; justify-content: center; background-color: #eeeeee; color: black;" th:text="${currentCategory.title}"></h2>
+            <p th:text="${currentCategory.description}"></p>
+        </div>
+
+        <div class="row">
+            <div style="display: flex; justify-content: space-evenly;" class="col-sm-4" th:each="i: ${items}">
+                <div class="card mb-4" style="width: 20rem;" th:if="${i.name}">
+                    <span th:unless="${i.auctionHasEnded}" class="alert-success p-1" style="display: flex; justify-content: center">Open Auction</span>
+                    <span th:if="${i.auctionHasEnded}" class="alert-danger p-1" style="display: flex; justify-content: center">Auction Over</span>
+                    <img th:src="${i.picture}" class="card-img-top mb-5" alt="img of product">
+                    <div class="card-body">
+
+                        <h5 class="card-title" style="text-align: center" th:text="${i.name}"></h5>
+                        <small  class="text-muted" th:text="'Auction Ends: ' + ${i.getFormattedDate}"></small>
+                        <p class="card-text" style="background-color: #eeeeee; padding: 2.5%; border-radius: 4%" th:text="'Info: '+${i.description}"></p>
+                        <p class="card-text" th:text="'Category: ' +${i.category.title}"></p>
+                        <p class="card-title" th:text="'Seller: '+${i.user.email}"></p>
+                        <div style="display: flex; justify-content: space-between;" >
+                        <p class="card-text" style="background-color: #eeeeee; padding: 2.5%; border-radius: 4%" th:text="'Starting Bid: '+${i.startingBid} +' SEK'"></p>
+                        <a th:href="'/auctionitem?id=' + ${i.id}"><button type="button" style="background-color: #a56b38; color: white;" class="btn btn">More</button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav aria-label="Page navigation example" th:if="${totalPages} != null">
+            <ul class="pagination justify-content-center">
+                <li class="page-item page-item disabled">
+                    <p class="page-link" th:text="'Page ' + ${displayCurrentPageNr} + ' of ' + ${totalPages}"></p>
+                </li>
+                <div th:if="${hasPrevious}">
+                    <li class="page-item">
+                        <a class="page-link" th:href="'?page=' + ${previousPageNumber}" tabindex="-1">Previous</a>
+                    </li>
+                </div>
+
+                <div th:each="i: ${totalPagesPairDisplay}">
+                    <li class="page-item">
+                        <a class="page-link" th:href="'?page=' + ${i.key}" th:text="${i.value}">
+                        </a></li>
+                </div>
+
+                <div th:if="${hasNext}">
+                <li class="page-item">
+                    <a class="page-link" th:href="'?page=' + ${nextPageNumber}">Next</a>
+                </li>
+                </div>
+
+            </ul>
+        </nav>
+    </div>
+</body>
+</html>

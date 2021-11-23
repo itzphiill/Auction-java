@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="">
+
+<head th:replace="/gathered/head" xmlns:th="http://www.w3.org/1999/xhtml"></head>
+
+<script>
+    function addItem() {
+        $('#addItem').toggle();
+    }
+</script>
+
+<body>
+
+    <header th:replace="/gathered/header"></header>
+
+    <div class="d-grid gap-2" style="margin: 3%;">
+        <button class="btn btn " id="button" style="margin-bottom: 2%; color: white; background-color: #a56b38;"
+            th:onclick="'javascript:addItem()'">Start Auction</button>
+    </div>
+
+    <div class="container">
+        <div class="row">
+
+            <div>
+
+            </div>
+
+            <div class="col-sm-4" th:each="i: ${items}" style="display: flex; align-items: center;">
+
+                <div class="card mb-4" style="width: 20rem;" th:if="${i.name}">
+                    <span th:unless="${i.auctionHasEnded}" class="alert-success p-1"
+                        style="display: flex; justify-content: center">Open Auction</span>
+                    <span th:if="${i.auctionHasEnded}" class="alert-danger p-1"
+                        style="display: flex; justify-content: center">Auction Over</span>
+                    <img th:src="${i.picture}" class="card-img-top mb-5" alt="img of product">
+                    <div class="card-body">
+
+                        <h5 class="card-title" style="text-align: center" th:text="${i.name}"></h5>
+                        <small class="text-muted" th:text="'Auction Ends: ' + ${i.getFormattedDate}"></small>
+                        <p class="card-text" style="background-color: #eeeeee; padding: 2.5%; border-radius: 4%"
+                            th:text="'Info: '+${i.description}"></p>
+                        <p class="card-text" th:text="'Category: ' +${i.category.title}"></p>
+
+
+                        <p class="card-title" th:text="'Seller: '+${i.user.email}"></p>
+                        <div style="display: flex; justify-content: space-around;">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Edit
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+                                    <form action="/seller/updateItem" method="get" style="margin-left: 10px">
+                                        <input type="text" id="id" name="id" th:value="${i.id}" hidden><br>
+                                        <label for="name">Name:</label><br>
+                                        <input type="text" id="name" name="name" th:value="${i.name}"><br>
+
+                                        <label for="startingBid">Starting Price:</label><br>
+                                        <input type="text" id="startingBid" name="startingBid"
+                                            th:value="${i.startingBid}"><br>
+                                        <label for="picture">Image Link:</label><br>
+                                        <input type="text" id="picture" name="picture" th:value="${i.picture}"><br>
+                                        <label for="category"
+                                            th:text="'Category: '+${i.category.title}">Category:</label><br>
+                                        <select id="category" name="category">
+                                            <option th:each="c: ${category}" th:text="${c.title}" th:value="${c.title}">
+                                            </option>
+
+                                        </select>
+                                        <br>
+                                        <label for="picture">Description:</label><br>
+                                        <textarea rows="4" cols="30" id="description" name="description"
+                                            style="margin-top: 2%" th:text="${i.description}"></textarea>
+                                        </textarea>
+
+                                        <input type="submit" value="Submit">
+                                    </form>
+                                </div>
+                            </div>
+                            <div>
+                                <a th:href="@{'/seller/delete/' + ${i.id}}"><button type="button"
+                                        class="btn btn-danger">Delete</button></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal" tabindex="-1" id="addItem">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add Item</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" style="display: flex; flex-direction: column;">
+                            <form action="/seller/addauktion" method="get">
+
+                                <div style="display: flex; flex-direction: column; ">
+                                    <label for="name">Item Name:</label>
+                                    <input type="text" id="name" name="name">
+                                </div>
+                                <div style="display: flex; flex-direction: column; ">
+                                    <label for="startingprice">Starting price:</label>
+                                    <input type="text" id="startingprice" name="startingprice">
+                                </div>
+                                <div style="display: flex; flex-direction: column; ">
+                                    <label for="picture">Image Link:</label>
+                                    <input type="text" id="picture" name="picture">
+                                </div>
+                                <div style="display: flex; flex-direction: column; ">
+                                    <label for="category">Category:</label>
+
+                                    <select id="category" name="category">
+
+                                        <option th:each="c: ${category}" th:text="${c.title}" th:value="${c.id}">
+                                        </option>
+
+                                    </select>
+                                </div>
+                                <div style="display: flex; flex-direction: column; ">
+                                    <label for="endtime">Auction End:</label>
+
+                                    <input type="datetime-local" id="endtime" name="endtime">
+                                </div>
+                                <div style="display: flex; flex-direction: column; ">
+                                    <label for="description">Description:</label>
+                                    <textarea rows="4" cols="30" id="description" name="description"
+                                        style="margin-top: 2%" placeholder="Description">
+                                </textarea>
+                                </div>
+
+                                <hr>
+
+                                <div style="display: flex; justify-content: space-between;">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button class="btn btn" id="button" type="submit" value="Submit"
+                                        style="color: white; background-color: #a56b38;"> Add Item
+                                    </button>
+                                </div>
+
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</body>
+
+</html>
